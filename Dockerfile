@@ -1,13 +1,15 @@
-FROM golang:1.17
+FROM golang:1.16-alpine
 
-RUN mkdir /build
-WORKDIR /build
+WORKDIR /app
 
-COPY . .
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
 
-RUN go get -d -v ./...
-RUN go install -v ./...
+COPY *.go ./
+
+RUN go build -o /httpServer
 
 EXPOSE 3000
 
-CMD ["httpServer"]
+CMD [ "/httpServer" ]
